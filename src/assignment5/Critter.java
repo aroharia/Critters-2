@@ -9,30 +9,50 @@
  * Slip days used: <0>
  * Fall 2016
  */
+
 package assignment5;
 
 import java.util.List;
 
-/* see the PDF for descriptions of the methods and fields in this class
- * you may add fields, methods or inner classes to Critter ONLY if you make your additions private
- * no new public, protected or default-package code or data can be added to Critter
- */
-
+import assignment5.Critter;
+import assignment5.InvalidCritterException;
+import assignment5.Params;
 
 public abstract class Critter {
+
+	public enum CritterShape {
+		CIRCLE,
+		SQUARE,
+		TRIANGLE,
+		DIAMOND,
+		STAR
+	}
+	
+	public javafx.scene.paint.Color viewColor() { 
+		return javafx.scene.paint.Color.WHITE; 
+	}
+	
+	public javafx.scene.paint.Color viewOutlineColor() { return viewColor(); }
+	public javafx.scene.paint.Color viewFillColor() { return viewColor(); }
+	
+	public abstract CritterShape viewShape(); 
+	
 	private static String myPackage;
 	private	static List<Critter> population = new java.util.ArrayList<Critter>();
 	private static List<Critter> babies = new java.util.ArrayList<Critter>();
+	static List<Integer> moved = new java.util.ArrayList<Integer>();
+	
+	// Gets the package name.  This assumes that Critter and its subclasses are all in the same package.
+	static {
+		myPackage = Critter.class.getPackage().toString().split(" ")[1];
+	}
+	
+	protected String look(int direction, boolean steps) {return "";}
 	
 	//to keep track if critter is alive
 	private boolean alive = true;
 	public boolean isAlive(){
 		return alive;
-	}
-
-	// Gets the package name.  This assumes that Critter and its subclasses are all in the same package.
-	static {
-		myPackage = Critter.class.getPackage().toString().split(" ")[1];
 	}
 	
 	private static java.util.Random rand = new java.util.Random();
@@ -418,7 +438,7 @@ public abstract class Critter {
 			}
 		} 
 		catch (InvalidCritterException|NoClassDefFoundError e) {
-			System.out.println("error processing: " + Main.in);
+			//System.out.println("error processing: " + Main.in);
 		}
 		
 		//new babies
@@ -436,45 +456,9 @@ public abstract class Critter {
 	}
 	
 	public static void displayWorld() {
-		
-		String[][] critterWorld = new String[Params.world_height+2][Params.world_width+2]; 
-		// iterate through entire grid
-		for (int height = 0; height < Params.world_height+2; height++ ) {
-			for (int width = 0; width < Params.world_width+2; width++ ) {
-				//if you're on the horizontal border
-				if (height == 0 || height == Params.world_height+1) {
-					//if you're on the corner's of the horizontal border
-					if (width == 0 || width == Params.world_width+1) {
-						critterWorld[height][width] = "+";
-						continue;
-					}
-					//if you're on the bar for the horizontal border
-					else 
-						critterWorld[height][width] = "-";
-				}
-				
-				//if you're on the vertical border (corners have already been drawn)
-				else if (width == 0 || width == Params.world_width+1)
-					critterWorld[height][width] = "|";
-				
-				//blanks for everything within the border
-				else 
-					critterWorld[height][width] = " ";
-			}
-		}
-		
-		//fill in the world with alive creatures
+		Painter.paint();
 		for (Critter crit : population) {
-			critterWorld[crit.y_coord + 1][crit.x_coord + 1] = crit.toString(); //offset by 1 because of top border
+			Painter.paintCritter(crit.x_coord, crit.y_coord, crit.viewShape(), crit.viewColor(), crit.viewOutlineColor(), crit.viewFillColor());
 		}
-		
-		//iterate through the entire grid and prints the border, corners, blank spaces, and critters
-		for (int height = 0; height < Params.world_height+2; height++) {
-			for (int width = 0; width < Params.world_width+2; width++) {
-				System.out.print(critterWorld[height][width]);
-			}
-			System.out.print("\n"); //go to the next line, to print next row
-		}
-		
 	}
 }

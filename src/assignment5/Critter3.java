@@ -44,5 +44,10 @@ public class Critter3 extends Critter {
 		if(Critter.getRandomInt(2) == 1) return true;
 		return false;
 	}
+	@Override
+	public CritterShape viewShape() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 }

@@ -35,4 +35,10 @@ public class Critter4 extends Critter{
 		return false;
 	}
 
+	@Override
+	public CritterShape viewShape() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

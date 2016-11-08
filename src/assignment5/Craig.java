@@ -1,8 +1,5 @@
 package assignment5;
 
-/*
- * Example critter
- */
 public class Craig extends Critter {
 	
 	@Override
@@ -72,4 +69,11 @@ public class Craig extends Critter {
 		System.out.print("" + total_left / (GENE_TOTAL * 0.01 * craigs.size()) + "% left   ");
 		System.out.println();
 	}
+	
+	@Override
+	public CritterShape viewShape() { return CritterShape.DIAMOND; }
+
+	@Override
+	public javafx.scene.paint.Color viewOutlineColor() { return javafx.scene.paint.Color.RED; }
+
 }
