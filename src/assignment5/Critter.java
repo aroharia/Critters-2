@@ -207,28 +207,21 @@ public abstract class Critter {
 	 * @return List of Critters.
 	 * @throws InvalidCritterException
 	 */
-	public static List<Critter> getInstances(String critter_class_name) throws InvalidCritterException {
+	public static List<Critter> getInstances() {
 		List<Critter> result = new java.util.ArrayList<Critter>();
-		Class<?> critterClass = null;
+//		Class<?> critterClass = null;
 
-		try {
+/*		try {
 			critterClass = Class.forName(myPackage + "." + critter_class_name);
 		} 
 		catch (ClassNotFoundException|NoClassDefFoundError e) {
 			throw new InvalidCritterException(critter_class_name);
 //			Main.hasDisplayedError = true;
-		}
-		try {
-			
+		}*/
+
 			for (Critter critter : population) {
-				if (critterClass.isInstance(critter)) {
 					result.add(critter);
-				}
 			}
-		}
-		catch(NullPointerException|NoClassDefFoundError e){
-			//System.out.println("error processing: " + Main.in);
-		}
 		
 		return result;
 	}
@@ -237,11 +230,12 @@ public abstract class Critter {
 	 * Prints out how many Critters of each type there are on the board.
 	 * @param critters List of Critters.
 	 */
-	public static void runStats(List<Critter> critters) {
-		System.out.print("" + critters.size() + " critters as follows -- ");
+	public static void runStats() {
+		List<Critter> crits = null;
+		crits = Critter.getInstances();
 		java.util.Map<String, Integer> critter_count = new java.util.HashMap<String, Integer>();
-		for (Critter crit : critters) {
-			String crit_string = crit.toString();
+		for (Critter crit : crits) {
+			String crit_string = crit.getClass().getSimpleName();
 			Integer old_count = critter_count.get(crit_string);
 			if (old_count == null) {
 				critter_count.put(crit_string,  1);
@@ -249,12 +243,13 @@ public abstract class Critter {
 				critter_count.put(crit_string, old_count.intValue() + 1);
 			}
 		}
-		String prefix = "";
+//		String prefix = "";
+		Main.stat.clear();
 		for (String s : critter_count.keySet()) {
-			System.out.print(prefix + s + ":" + critter_count.get(s));
-			prefix = ", ";
+			Main.stat.appendText(""+ s + ": " + critter_count.get(s) + " Critters\n");
+//			prefix = ", ";
 		}
-		System.out.println();		
+//		System.out.println();	
 	}
 	
 	/* the TestCritter class allows some critters to "cheat". If you want to 
@@ -460,5 +455,6 @@ public abstract class Critter {
 		for (Critter crit : population) {
 			Painter.paintCritter(crit.x_coord, crit.y_coord, crit.viewShape(), crit.viewColor(), crit.viewOutlineColor(), crit.viewFillColor());
 		}
+		runStats();
 	}
 }

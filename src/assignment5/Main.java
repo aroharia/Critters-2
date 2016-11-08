@@ -15,11 +15,12 @@ package assignment5; // cannot be in default package
 
 
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -35,6 +36,7 @@ import javafx.scene.control.Slider;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -49,6 +51,8 @@ import javafx.util.Duration;
 public class Main extends Application{
 	static GridPane grid = new GridPane();
 	static GridPane modelGrid = new GridPane();
+	static TextArea stat = new TextArea();
+	static VBox statsArea = new VBox(stat);
 	static int steps =0;
 	static boolean shown = false;
 	
@@ -75,11 +79,19 @@ public class Main extends Application{
 			model.setScene(modelScene);
         	model.show();
 			
+        	Stage statStage = new Stage();
+        	statStage.setTitle("Run Stats");
+        	Scene statScene = new Scene(statsArea, 300, 150);
+        	statStage.setScene(statScene);
+        	statStage.show();
+        	stat.setEditable(false);
+        	stat.setPromptText("Run stats will appear here");
+        	
 			Label name = new Label("Critter:");
 			grid.add(name, 1, 9, 2, 1);
 			TextField critterType = new TextField();
 			grid.add(critterType, 1, 10, 5, 1);
-			ObservableList<String> options = 
+/*			ObservableList<String> options = 
 				    FXCollections.observableArrayList(
 				        "Craig",
 				        "Algae",
@@ -87,8 +99,8 @@ public class Main extends Application{
 				        "Critter2",
 				        "Critter3",
 				        "Critter4"
-				    );
-			ComboBox comboBox = new ComboBox(options);
+				    ); */
+//			ComboBox comboBox = new ComboBox(options);
 //			grid.add(comboBox, 1, 10, 5, 1);
 //			GridPane.setHalignment(comboBox, HPos.LEFT); // To align horizontally in the cell
 //			GridPane.setValignment(comboBox, VPos.BOTTOM); // To align vertically in the cell
@@ -118,9 +130,9 @@ public class Main extends Application{
 	            public void handle(ActionEvent event) {
 	                if((critterType.getText() != null && 
 	                        !critterType.getText().isEmpty()) && (numCritter.getText() != null && !numCritter.getText().isEmpty())){
-	                    String number = numCritter.getText();
-	                    String type = critterType.getText();
-	                	if(!(numCritter.getText().matches("^[0-9]+$"))){
+	                    String number = numCritter.getText().replaceAll("\\s","");
+	                    String type = critterType.getText().replaceAll("\\s","");
+	                	if(!(number.matches("^[0-9]+$"))){
 		                	actiontarget.setFill(Color.FIREBRICK);
 		                    actiontarget.setText("Insert valid number");
 	                	}
@@ -132,6 +144,8 @@ public class Main extends Application{
 	        							Critter.makeCritter(type);
 				                }
 				                clist.appendText(type + " x " + number + "\n");
+				                numCritter.clear();
+				                critterType.clear();
 	                		}catch(InvalidCritterException|NullPointerException|NumberFormatException exception){
 	            					actiontarget.setText("Please input a valid Critter type");
 	   
@@ -217,7 +231,7 @@ public class Main extends Application{
 	                		numSteps.clear();
 	    	            	numCritter.clear();
 	    	            	clist.clear();
-	    	            	comboBox.getSelectionModel().clearSelection();
+//	    	            	comboBox.getSelectionModel().clearSelection();
 	    	            	shown = true;
 	    	                Critter.displayWorld();
 	                	}
@@ -278,21 +292,27 @@ public class Main extends Application{
 						return;
 					}
 					stopper.setDisable(false);
-					comboBox.setDisable(true);
+//					comboBox.setDisable(true);
+					slider.setDisable(true);
 					numCritter.setDisable(true);
 					butt.setDisable(true);
+					critterType.setDisable(true);
 					numSteps.setDisable(true);
 					displayButt.setDisable(true);
 					runButt.setDisable(true);
+					clist.clear();
 					
-					timeline.getKeyFrames().add(new KeyFrame(Duration.millis(1000/slider.getValue()), 
+					timeline.getKeyFrames().add(new KeyFrame(Duration.millis(1000), 
 							new EventHandler<ActionEvent>() {
 						
 						@Override
 						public void handle(ActionEvent event){
-							Critter.worldTimeStep();
+							for(int i = 0; i < slider.getValue(); i++){
+								Critter.worldTimeStep();
+							}
 							Critter.displayWorld();
 						}
+						
 					}));    
 					timeline.setCycleCount(Timeline.INDEFINITE);
 					timeline.play();
@@ -307,7 +327,9 @@ public class Main extends Application{
 				public void handle(ActionEvent event){
 					timeline.stop();
 					stopper.setDisable(true);
-					comboBox.setDisable(false);
+//					comboBox.setDisable(false);
+					slider.setDisable(false);
+					critterType.setDisable(false);
 					numCritter.setDisable(false);
 					butt.setDisable(false);
 					numSteps.setDisable(false);
