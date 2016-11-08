@@ -75,7 +75,7 @@ public class Main extends Application{
 			
 			Stage model = new Stage();
 			model.setTitle("Critter World");
-			Scene modelScene = new Scene(modelGrid, Params.world_width*(Painter.size+1), Params.world_height*(Painter.size+1));
+			Scene modelScene = new Scene(modelGrid, Params.world_width*(Painter.size+2), Params.world_height*(Painter.size+2));
 			model.setScene(modelScene);
         	model.show();
 			

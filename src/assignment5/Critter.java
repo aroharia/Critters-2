@@ -48,6 +48,8 @@ public abstract class Critter {
 	}
 	
 	protected String look(int direction, boolean steps) {
+		//subtract look energy cost
+		this.energy = this.energy - Params.look_energy_cost;
 		//initializations
 		int distance;
 		int x = this.x_coord;
@@ -116,7 +118,7 @@ public abstract class Critter {
 
 		for (Critter c : population) {
 			if (c.x_coord == x && c.y_coord == y)
-				return this.toString();
+				return c.toString();
 		}
 		return null;
 	

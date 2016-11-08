@@ -33,12 +33,12 @@ public class Critter2 extends Critter {
 	public void doTimeStep() {
 		walk(Critter.getRandomInt(8));
 		if(getEnergy() > 200) reproduce(new Critter2(), Critter.getRandomInt(8));
-		if(belligerence != 0) belligerence--;
+		if(belligerence != 1) belligerence--;
 	}
 
 	@Override
 	public boolean fight(String oponent) {
-		if(Critter.getRandomInt(belligerence) == 0){
+		if(Critter.getRandomInt(belligerence) == 1){
 			belligerence = 10;
 			return true;
 		}

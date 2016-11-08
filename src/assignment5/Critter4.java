@@ -16,7 +16,7 @@ import assignment5.Critter.CritterShape;
 
 /*
  * Sedentary Critter that rarely moves, but it is more likely move the lower it's energy
- * Will attempt run from a fight
+ * Will attempt to look in a random direction, if it is empty, will run from a fight
  * if it cannot run, it will give up and choose not to fight
  */
 public class Critter4 extends Critter{
@@ -26,14 +26,19 @@ public class Critter4 extends Critter{
 	
 	@Override
 	public void doTimeStep() {
-		int moveDec = Critter.getRandomInt(getEnergy());
+		int moveDec = 0;
+		if(getEnergy() > 0){
+			moveDec = Critter.getRandomInt(getEnergy());
+		}
 		if(moveDec < 50) walk(Critter.getRandomInt(8));
 		
 	}
 
 	@Override
 	public boolean fight(String oponent) {
-		run(Critter.getRandomInt(8));
+		if(look(Critter.getRandomInt(8), true) == null){
+			run(Critter.getRandomInt(8));
+		}
 		return false;
 	}
 

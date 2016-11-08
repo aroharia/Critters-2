@@ -15,7 +15,7 @@ package assignment5;
 import assignment5.Critter.CritterShape;
 
 /*
- * This Critter only likes to move diagonally or in standard up, down, left or right. Opposite of how parent moved
+ * This Critter only likes to move diagonally or in standard up, down, left or right, as long as look returns no string. Opposite of how parent moved
  * low confidence Critter. It assumes it will lose any fight and attempts to shoot out a baby before even deciding to fight
  * has a 50/50 chance to fight
  * 
@@ -35,8 +35,9 @@ public class Critter3 extends Critter {
 	@Override
 	public void doTimeStep() {
 		int decision = (2 * Critter.getRandomInt(4)) + moveType;
-		walk(decision);
-		
+		if(look(decision, false)==null){
+			walk(decision);
+		}
 	}
 
 	@Override
