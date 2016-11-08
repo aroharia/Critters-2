@@ -212,7 +212,9 @@ public class Main extends Application{
 		       	 
 	            @Override
 	            public void handle(ActionEvent event) {
-	                if((numSteps.getText() != null && !numSteps.getText().isEmpty())){
+	                if(numSteps.getText().isEmpty()){
+	                	numSteps.setText("1");
+	                }
 	                    String stepNum = numSteps.getText();
 	                	if(!(numSteps.getText().matches("^[0-9]+$"))){
 		                	actiontarget1.setFill(Color.FIREBRICK);
@@ -235,12 +237,7 @@ public class Main extends Application{
 	    	            	shown = true;
 	    	                Critter.displayWorld();
 	                	}
-	                }
-	                else{
-	                    actiontarget1.setFill(Color.FIREBRICK);
-	                    actiontarget1.setText("Insert number of steps");
-	                }
-	            	
+	                
 	            }
 	        });
 	        
