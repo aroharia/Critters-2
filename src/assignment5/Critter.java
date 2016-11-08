@@ -47,7 +47,80 @@ public abstract class Critter {
 		myPackage = Critter.class.getPackage().toString().split(" ")[1];
 	}
 	
-	protected String look(int direction, boolean steps) {return "";}
+	protected String look(int direction, boolean steps) {
+		//initializations
+		int distance;
+		int x = this.x_coord;
+		int y = this.y_coord;
+		
+		//if steps is true, distance = 2
+		if (steps)
+			distance = 2;
+		else 
+			distance = 1;
+		
+		switch (direction) {
+		//right
+		case 0: x = x + distance;
+		break;
+		
+		//up-right
+		case 1: x = x + distance;
+		y = y - distance;
+		break;
+		
+		//up
+		case 2: y = y - distance;
+		break;
+		
+		//up-left
+		case 3: x = x - distance;
+		y = y - distance;
+		break;
+		
+		//left
+		case 4: x = x - distance;
+		break;
+		
+		//down-left
+		case 5: x = x - distance;
+		y = y + distance;
+		break;
+		
+		//down
+		case 6: y = y + distance;
+		break;
+		
+		//down-right
+		case 7: x = x + distance;
+		y = y + distance;
+		break;
+		
+		//error
+		default:
+			break;
+		}
+
+		//____x -> x____
+		if (x > Params.world_width - 1)
+			x = x - Params.world_width;
+		//x____ -> ____x
+		else if (x < 0)
+			x = x + Params.world_width;
+		//move to top of the grid
+		if (y> Params.world_height - 1)
+			y = y - Params.world_height;
+		//move to bottom of the grid
+		else if (y < 0)
+			y = y + Params.world_height;
+
+		for (Critter c : population) {
+			if (c.x_coord == x && c.y_coord == y)
+				return this.toString();
+		}
+		return null;
+	
+	}
 	
 	//to keep track if critter is alive
 	private boolean alive = true;
