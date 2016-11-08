@@ -12,6 +12,8 @@
 
 package assignment5;
 
+import assignment5.Critter.CritterShape;
+
 /*
  * Sedentary Critter that rarely moves, but it is more likely move the lower it's energy
  * Will attempt run from a fight
@@ -36,9 +38,13 @@ public class Critter4 extends Critter{
 	}
 
 	@Override
-	public CritterShape viewShape() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	public CritterShape viewShape() { return CritterShape.STAR; }
+
+	@Override
+	public javafx.scene.paint.Color viewOutlineColor() { return javafx.scene.paint.Color.CYAN; }
+	
+	@Override
+	public javafx.scene.paint.Color viewFillColor() { return javafx.scene.paint.Color.HOTPINK;}
+	
 
 }

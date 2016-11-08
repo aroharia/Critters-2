@@ -12,6 +12,8 @@
 
 package assignment5;
 
+import assignment5.Critter.CritterShape;
+
 /*
  * will just walk around
  * every time-step makes it more belligerent (has a higher chance of fighting)
@@ -44,9 +46,9 @@ public class Critter2 extends Critter {
 	}
 
 	@Override
-	public CritterShape viewShape() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	public CritterShape viewShape() { return CritterShape.SQUARE; }
+
+	@Override
+	public javafx.scene.paint.Color viewOutlineColor() { return javafx.scene.paint.Color.BROWN; }
 
 }

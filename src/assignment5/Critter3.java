@@ -12,6 +12,8 @@
 
 package assignment5;
 
+import assignment5.Critter.CritterShape;
+
 /*
  * This Critter only likes to move diagonally or in standard up, down, left or right. Opposite of how parent moved
  * low confidence Critter. It assumes it will lose any fight and attempts to shoot out a baby before even deciding to fight
@@ -45,9 +47,12 @@ public class Critter3 extends Critter {
 		return false;
 	}
 	@Override
-	public CritterShape viewShape() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	public CritterShape viewShape() { return CritterShape.TRIANGLE; }
+
+	@Override
+	public javafx.scene.paint.Color viewOutlineColor() { return javafx.scene.paint.Color.BROWN; }
+	
+	@Override
+	public javafx.scene.paint.Color viewFillColor() { return javafx.scene.paint.Color.GREEN;}
 	
 }
