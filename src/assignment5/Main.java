@@ -12,10 +12,14 @@
 
 package assignment5; // cannot be in default package
 
-import java.util.Timer;
-import java.util.TimerTask;
 
+
+
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -36,6 +40,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 /*
  * Usage: java <pkgname>.Main <input file> test
  * input file is optional.  If input file is specified, the word 'test' is optional.
@@ -45,7 +50,6 @@ public class Main extends Application{
 	static GridPane grid = new GridPane();
 	static GridPane modelGrid = new GridPane();
 	static int steps =0;
-	static boolean simulating = false;
 	static boolean shown = false;
 	
 	public static void main(String[] args){
@@ -73,7 +77,8 @@ public class Main extends Application{
 			
 			Label name = new Label("Critter:");
 			grid.add(name, 1, 9, 2, 1);
-			
+			TextField critterType = new TextField();
+			grid.add(critterType, 1, 10, 5, 1);
 			ObservableList<String> options = 
 				    FXCollections.observableArrayList(
 				        "Craig",
@@ -84,16 +89,16 @@ public class Main extends Application{
 				        "Critter4"
 				    );
 			ComboBox comboBox = new ComboBox(options);
-			grid.add(comboBox, 1, 10, 5, 1);
-			GridPane.setHalignment(comboBox, HPos.LEFT); // To align horizontally in the cell
-			GridPane.setValignment(comboBox, VPos.BOTTOM); // To align vertically in the cell
+//			grid.add(comboBox, 1, 10, 5, 1);
+//			GridPane.setHalignment(comboBox, HPos.LEFT); // To align horizontally in the cell
+//			GridPane.setValignment(comboBox, VPos.BOTTOM); // To align vertically in the cell
 			
 			
 
 			Label num = new Label("Critter #");
 			grid.add(num, 6, 9, 4, 1);
 			TextField numCritter = new TextField();
-			grid.add(numCritter, 6, 10, 2 ,1);
+			grid.add(numCritter, 6, 10, 3 ,1);
 			Button butt = new Button("Add");
 			GridPane.setHalignment(butt, HPos.LEFT); // To align horizontally in the cell
 			GridPane.setValignment(butt, VPos.BOTTOM); // To align vertically in the cell
@@ -111,10 +116,10 @@ public class Main extends Application{
 	       	 
 	            @Override
 	            public void handle(ActionEvent event) {
-	                if((comboBox.getValue() != null && 
-	                        !comboBox.getValue().toString().isEmpty()) && (numCritter.getText() != null && !numCritter.getText().isEmpty())){
+	                if((critterType.getText() != null && 
+	                        !critterType.getText().isEmpty()) && (numCritter.getText() != null && !numCritter.getText().isEmpty())){
 	                    String number = numCritter.getText();
-	                    String type = comboBox.getValue().toString();
+	                    String type = critterType.getText();
 	                	if(!(numCritter.getText().matches("^[0-9]+$"))){
 		                	actiontarget.setFill(Color.FIREBRICK);
 		                    actiontarget.setText("Insert valid number");
@@ -122,12 +127,13 @@ public class Main extends Application{
 	                	else{
 	                		try{
 	                			actiontarget.setText("                   ");
-	                			clist.appendText(type + " x " + number + "\n");
+	                			
 				                for(int i=0; i < Integer.parseInt(number); i+=1){
 	        							Critter.makeCritter(type);
 				                }
+				                clist.appendText(type + " x " + number + "\n");
 	                		}catch(InvalidCritterException|NullPointerException|NumberFormatException exception){
-	            					System.out.println("error processing");
+	            					actiontarget.setText("Please input a valid Critter type");
 	   
 	                		}
 	                	}
@@ -225,7 +231,7 @@ public class Main extends Application{
 	        });
 	        
 	        
-	        Label times = new Label("Time: ");
+/*	        Label times = new Label("Time: ");
 	        grid.add(times, 1, 40, 2, 1);
 	        GridPane.setHalignment(times, HPos.LEFT); // To align horizontally in the cell
 			GridPane.setValignment(times, VPos.CENTER); // To align vertically in the cell
@@ -234,7 +240,7 @@ public class Main extends Application{
 	        grid.add(timesNum, 2, 40, 1, 1);
 	        GridPane.setHalignment(timesNum, HPos.LEFT); // To align horizontally in the cell
 			GridPane.setValignment(timesNum, VPos.CENTER); // To align vertically in the cell
-			
+*/			
 	        Label speedL = new Label("Speed: ");
 	        grid.add(speedL, 1, 45);
 	        GridPane.setHalignment(speedL, HPos.LEFT); // To align horizontally in the cell
@@ -251,19 +257,19 @@ public class Main extends Application{
 	        
 	        
 	        Slider slider = new Slider();
-	        slider.setMin(0);
+	        slider.setMin(1);
 	        slider.setMax(10);
 	        slider.setValue(5);
 	        slider.setShowTickLabels(true);
 	        slider.setShowTickMarks(true);
 	        slider.setSnapToTicks(true);
-	        slider.setMajorTickUnit(5);
-	        slider.setMinorTickCount(5);
+	        slider.setMajorTickUnit(1);
+	        slider.setMinorTickCount(0);
 	        slider.setBlockIncrement(1);
 	        grid.add(slider, 2, 45, 10, 2);
 			GridPane.setHalignment(slider, HPos.LEFT); // To align horizontally in the cell
 			GridPane.setValignment(slider, VPos.BOTTOM); // To align vertically in the cell
-			
+			Timeline timeline = new Timeline();
 			runButt.setOnAction(new EventHandler<ActionEvent>() {
 				
 				@Override
@@ -277,23 +283,20 @@ public class Main extends Application{
 					butt.setDisable(true);
 					numSteps.setDisable(true);
 					displayButt.setDisable(true);
-					simulating = true;
-					while(simulating){
-						Timer timer = new Timer();
-						timer.schedule(new TimerTask() {
-							
-							@Override
-							public void run(){
-								Critter.displayWorld();
-							}
-						}, (long)(slider.getValue() * 10));
-					}
-					stopper.setDisable(true);
-					comboBox.setDisable(false);
-					numCritter.setDisable(false);
-					butt.setDisable(false);
-					numSteps.setDisable(false);
-					displayButt.setDisable(false);
+					runButt.setDisable(true);
+					
+					timeline.getKeyFrames().add(new KeyFrame(Duration.millis(1000/slider.getValue()), 
+							new EventHandler<ActionEvent>() {
+						
+						@Override
+						public void handle(ActionEvent event){
+							Critter.worldTimeStep();
+							Critter.displayWorld();
+						}
+					}));    
+					timeline.setCycleCount(Timeline.INDEFINITE);
+					timeline.play();
+					
 					
 				}
 			});
@@ -302,7 +305,14 @@ public class Main extends Application{
 				
 				@Override
 				public void handle(ActionEvent event){
-					simulating = false;
+					timeline.stop();
+					stopper.setDisable(true);
+					comboBox.setDisable(false);
+					numCritter.setDisable(false);
+					butt.setDisable(false);
+					numSteps.setDisable(false);
+					displayButt.setDisable(false);
+					runButt.setDisable(false);
 				}
 			});
 			
